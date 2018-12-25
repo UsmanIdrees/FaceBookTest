@@ -21,7 +21,14 @@ public class Facebookscript : MonoBehaviour {
 
 	public void Login()
 	{
-		FB.LogInWithReadPermissions (callback: OnLogin);
+		List<string> Permissions = new List<string> ()
+		{
+			"user_likes",
+			"public_profile",
+			"email"
+		};
+		//List<> Permissions = new List("user_likes");
+		FB.LogInWithReadPermissions (Permissions,callback: OnLogin);
 	}
 	void OnLogin(ILoginResult loginresult)
 	{
@@ -42,11 +49,17 @@ public class Facebookscript : MonoBehaviour {
 	}
 	void OnPageLike(IGraphResult LikeResult)
 	{
-		if (LikeResult.Cancelled || !string.IsNullOrEmpty (LikeResult.Error)) {
+		/*if (LikeResult.Cancelled || !string.IsNullOrEmpty (LikeResult.Error)) {
 			Debug.Log ("Operation CAncelled with error " + LikeResult.Error);
 		} else 
 		{
 			Liketext.text = "Success";
-		}
+		}*/
+
+		//Liketext.text = LikeResult.RawResult;
+		IDictionary<string,object> result = LikeResult.ResultDictionary;
+		Liketext.text = result.Keys.ToString();
+
+		//Debug.Log(LikeResult.RawResult);
 	}
 }
