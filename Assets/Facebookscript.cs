@@ -7,6 +7,9 @@ public class Facebookscript : MonoBehaviour {
 
 	public Text IdText;
 	public Text Liketext;
+	public Text CoinText;
+
+	private bool Liking = false;
 
 	// Use this for initialization
 	void Awake () 
@@ -18,7 +21,6 @@ public class Facebookscript : MonoBehaviour {
 			FB.ActivateApp ();
 		}
 	}
-
 	public void Login()
 	{
 		List<string> Permissions = new List<string> ()
@@ -34,7 +36,7 @@ public class Facebookscript : MonoBehaviour {
 	{
 		if (FB.IsLoggedIn) 
 		{
-			Debug.Log ("Successfully Logged In");
+			//Debug.Log ("Successfully Logged In");
 			IdText.text = loginresult.AccessToken.UserId;
 		} 
 		else if (loginresult.Cancelled) 
@@ -42,10 +44,10 @@ public class Facebookscript : MonoBehaviour {
 			Debug.Log ("Error While Logging in " + loginresult.Error);
 		}
 	}
-
 	public void Like()
 	{
-		FB.API ("/me/likes", HttpMethod.GET, callback: OnPageLike);
+		Application.OpenURL ("https://www.facebook.com/2328688297359765");
+		Liking = true;
 	}
 	void OnPageLike(IGraphResult LikeResult)
 	{
@@ -57,9 +59,19 @@ public class Facebookscript : MonoBehaviour {
 		}*/
 
 		//Liketext.text = LikeResult.RawResult;
-		IDictionary<string,object> result = LikeResult.ResultDictionary;
-		Liketext.text = result.Keys.ToString();
+		//IDictionary<string,object> result = LikeResult.ResultDictionary;
+		CoinText.text = LikeResult.RawResult;
+		Liketext.text = "200000";
+		//Liketext.text = result.Keys.ToString();
 
 		//Debug.Log(LikeResult.RawResult);
+	}
+	void OnApplicationFocus(bool IsFocus)
+	{
+		if (IsFocus && Liking) 
+		{
+			FB.API ("/me/likes/2328688297359765", HttpMethod.GET, callback: OnPageLike);
+			Liking = false;
+		}
 	}
 }
